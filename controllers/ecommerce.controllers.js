@@ -170,7 +170,7 @@ export const createAuction = async (req, res) => {
 
   try {
     const [result] = await pool.query(
-      "INSERT INTO auction (title, description, start_price, current_price, current_bidder, start_time, end_time, seller, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO auction (title, description, start_price, current_price, current_bidder, start_time, end_time, seller, image_url) VALUES (?, ?, ?, ?, ?, ?, null, ?, ?)",
       [
         title,
         description,
