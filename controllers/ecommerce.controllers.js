@@ -166,11 +166,11 @@ export const createAuction = async (req, res) => {
     image_url,
   } = req.body;
   const current_price = req.body.current_price || start_price;
-  const current_bidder = req.body.current_bidder || "None"; // set current_bidder to 'None' if no value is provided
+  const current_bidder = req.body.current_bidder || null; // set current_bidder to NULL if no value is provided
 
   try {
     const [result] = await pool.query(
-    "INSERT INTO auction (title, description, start_price, current_price, current_bidder, start_time, end_time, seller, image_url) VALUES (?, ?, ?, ?, ?, ?, null, ?, ?)",
+    "INSERT INTO auction (title, description, start_price, current_price, current_bidder, start_time, end_time, seller, status, image_url) VALUES (?, ?, ?, ?, ?, ?, null, ?, 'active', ?)",
       [
         title,
         description,
