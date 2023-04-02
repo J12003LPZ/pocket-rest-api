@@ -125,15 +125,35 @@ export const updateAuction = async (req, res) => {
   const auctionId = req.params.id;
 
   try {
+    const [existingAuction] = await pool.query(
+      "SELECT * FROM auction WHERE id = ?",
+      [auctionId]
+    );
+
+    if (!existingAuction.length) {
+      return res.status(404).json({ message: "Auction not found" });
+    }
+
+    const {
+      title,
+      description,
+      current_price,
+      current_bidder,
+      end_time,
+      image_url,
+      status,
+    } = req.body;
+
     const [result] = await pool.query(
-      "UPDATE auction SET title = ?, description = ?, current_price = ?, current_bidder = ?, end_time = ?, image_url = ? WHERE id = ?",
+      "UPDATE auction SET title = ?, description = ?, current_price = ?, current_bidder = ?, end_time = IFNULL(STR_TO_DATE(?, '%Y-%m-%dT%H:%i:%sZ'), end_time), image_url = ?, status = ? WHERE id = ?",
       [
-        req.body.title,
-        req.body.description,
-        req.body.current_price,
-        req.body.current_bidder,
-        req.body.end_time,
-        req.body.image_url,
+        title || existingAuction[0].title,
+        description || existingAuction[0].description,
+        current_price || existingAuction[0].current_price,
+        current_bidder || existingAuction[0].current_bidder,
+        end_time,
+        image_url || existingAuction[0].image_url,
+        status || existingAuction[0].status,
         auctionId,
       ]
     );
@@ -156,28 +176,25 @@ export const updateAuction = async (req, res) => {
 
 // Create one auction
 export const createAuction = async (req, res) => {
-  const {
-    title,
-    description,
-    start_price,
-    start_time,
-    end_time,
-    seller,
-    image_url,
-  } = req.body;
+  const { title, description, start_price, end_time, seller, image_url } =
+    req.body;
+
+  if (!seller) {
+    return res.status(400).json({ message: "Seller is required" });
+  }
+
   const current_price = req.body.current_price || start_price;
   const current_bidder = req.body.current_bidder || null; // set current_bidder to NULL if no value is provided
 
   try {
     const [result] = await pool.query(
-    "INSERT INTO auction (title, description, start_price, current_price, current_bidder, start_time, end_time, seller, status, image_url) VALUES (?, ?, ?, ?, ?, ?, null, ?, 'active', ?)",
+      "INSERT INTO auction (title, description, start_price, current_price, current_bidder, start_time, end_time, seller, status, image_url) VALUES (?, ?, ?, ?, ?, NOW(), STR_TO_DATE(?, '%Y-%m-%dT%H:%i:%sZ'), ?, 'active', ?)",
       [
         title,
         description,
         start_price,
         current_price,
         current_bidder,
-        start_time,
         end_time,
         seller,
         image_url,
