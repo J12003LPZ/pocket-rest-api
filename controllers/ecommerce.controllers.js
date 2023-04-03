@@ -39,6 +39,62 @@ export const getProduct = async (req, res) => {
   }
 };
 
+// Get all men products
+export const getAllMenProducts = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM product WHERE product_category = 'men'"
+    );
+    res.json(rows);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something goes wrong!",
+    });
+  }
+};
+
+// Get all womens products
+export const getAllWomenProducts = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM product WHERE product_category = 'women'"
+    );
+    res.json(rows);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something goes wrong!",
+    });
+  }
+};
+
+// Get all kids products
+export const getAllKidsProducts = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM product WHERE product_category = 'kids'"
+    );
+    res.json(rows);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something goes wrong!",
+    });
+  }
+};
+
+// Get all girls products
+export const getAllGirlsProducts = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM product WHERE product_category = 'girls'"
+    );
+    res.json(rows);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something goes wrong!",
+    });
+  }
+};
+
 // Get latest products
 export const getLatestProducts = async (req, res) => {
   try {
