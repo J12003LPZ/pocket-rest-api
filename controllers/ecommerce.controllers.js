@@ -39,6 +39,26 @@ export const getProduct = async (req, res) => {
   }
 };
 
+export const getProductsByCategory = async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM product WHERE product_category = ?",
+      [req.params.id]
+    );
+
+    if (rows.length <= 0)
+      return res.status(404).json({
+        message: `There is not product with the category of ${req.params.id}`,
+      });
+
+    res.json(rows);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Something goes wrong!",
+    });
+  }
+};
+
 // Get all men products
 export const getAllMenProducts = async (req, res) => {
   try {
