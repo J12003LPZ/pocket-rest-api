@@ -252,8 +252,8 @@ export const updateAuction = async (req, res) => {
 
 // Create one auction
 export const createAuction = async (req, res) => {
-  const { title, description, start_price, end_time, seller, image_url } =
-    req.body;
+  
+const { title, description, start_price, end_time, seller, image_url } = req.body;
 
   if (!seller) {
     return res.status(400).json({ message: "Seller is required" });
